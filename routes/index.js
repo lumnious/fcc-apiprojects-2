@@ -3,14 +3,13 @@ var router = express.Router();
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.send(
-  	'<br>lang: ' + req.get('Accept-Language') +
-  	'<br>test: ' + req.get('Host') +
-  	'<br>test: ' + req.get('User-Agent') +
-  	'<br>test: ' + JSON.stringify(req.headers) +
-  	'<br>test: ' + req.ip +
-  	'<br>test: ' + req.ips
-  	)
+	var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress || null;
+	var lang = req.headers['accept-language'].split(',')[0] || null;
+	var software = req.headers['user-agent'].split('(')[1].split(')')[0] || null;
+  res.send(JSON.stringify({
+  		"ipaddress": ip,
+  		"language": lang,
+  		"software": software}));
 });
 
 module.exports = router;
